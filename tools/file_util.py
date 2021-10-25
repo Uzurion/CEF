@@ -5,10 +5,7 @@
 from __future__ import absolute_import
 from glob import iglob
 from io import open
-import os
-import shutil
 import sys
-import time
 
 
 def read_file(name, normalize=True):
@@ -42,140 +39,12 @@ def write_file(name, data):
     raise
 
 
-def path_exists(name):
-  """ Returns true if the path currently exists. """
-  return os.path.exists(name)
-
-
-def write_file_if_changed(name, data):
-  """ Write a file if the contents have changed. Returns True if the file was written. """
-  if path_exists(name):
-    old_contents = read_file(name)
-  else:
-    old_contents = ''
-
-  if (data != old_contents):
-    write_file(name, data)
-    return True
-  return False
-
-
-def backup_file(name):
-  """ Rename the file to a name that includes the current time stamp. """
-  move_file(name, name + '.' + time.strftime('%Y-%m-%d-%H-%M-%S'))
-
-
-def copy_file(src, dst, quiet=True):
-  """ Copy a file. """
-  try:
-    shutil.copy2(src, dst)
-    if not quiet:
-      sys.stdout.write('Transferring ' + src + ' file.\n')
-  except IOError as e:
-    (errno, strerror) = e.args
-    sys.stderr.write('Failed to copy file from ' + src + ' to ' + dst + ': ' +
-                     strerror)
-    raise
-
-
-def move_file(src, dst, quiet=True):
-  """ Move a file. """
-  try:
-    shutil.move(src, dst)
-    if not quiet:
-      sys.stdout.write('Moving ' + src + ' file.\n')
-  except IOError as e:
-    (errno, strerror) = e.args
-    sys.stderr.write('Failed to move file from ' + src + ' to ' + dst + ': ' +
-                     strerror)
-    raise
-
-
-def copy_files(src_glob, dst_folder, quiet=True):
-  """ Copy multiple files. """
-  for fname in iglob(src_glob):
-    dst = os.path.join(dst_folder, os.path.basename(fname))
-    if os.path.isdir(fname):
-      copy_dir(fname, dst, quiet)
-    else:
-      copy_file(fname, dst, quiet)
-
-
-def remove_file(name, quiet=True):
-  """ Remove the specified file. """
-  try:
-    if path_exists(name):
-      os.remove(name)
-      if not quiet:
-        sys.stdout.write('Removing ' + name + ' file.\n')
-  except IOError as e:
-    (errno, strerror) = e.args
-    sys.stderr.write('Failed to remove file ' + name + ': ' + strerror)
-    raise
-
-
-def copy_dir(src, dst, quiet=True):
-  """ Copy a directory tree. """
-  try:
-    remove_dir(dst, quiet)
-    shutil.copytree(src, dst)
-    if not quiet:
-      sys.stdout.write('Transferring ' + src + ' directory.\n')
-  except IOError as e:
-    (errno, strerror) = e.args
-    sys.stderr.write('Failed to copy directory from ' + src + ' to ' + dst +
-                     ': ' + strerror)
-    raise
-
-
-def remove_dir(name, quiet=True):
-  """ Remove the specified directory. """
-  try:
-    if path_exists(name):
-      shutil.rmtree(name)
-      if not quiet:
-        sys.stdout.write('Removing ' + name + ' directory.\n')
-  except IOError as e:
-    (errno, strerror) = e.args
-    sys.stderr.write('Failed to remove directory ' + name + ': ' + strerror)
-    raise
-
-
-def make_dir(name, quiet=True):
-  """ Create the specified directory. """
-  try:
-    if not path_exists(name):
-      if not quiet:
-        sys.stdout.write('Creating ' + name + ' directory.\n')
-      os.makedirs(name)
-  except IOError as e:
-    (errno, strerror) = e.args
-    sys.stderr.write('Failed to create directory ' + name + ': ' + strerror)
-    raise
-
-
 def get_files(search_glob):
   """ Returns all files matching the search glob. """
   # Sort the result for consistency across platforms.
   return sorted(iglob(search_glob))
 
 
-def read_version_file(file, args):
-  """ Read and parse a version file (key=value pairs, one per line). """
-  lines = read_file(file).split("\n")
-  for line in lines:
-    parts = line.split('=', 1)
-    if len(parts) == 2:
-      args[parts[0]] = parts[1]
-
-
 def eval_file(src):
   """ Loads and evaluates the contents of the specified file. """
   return eval(read_file(src), {'__builtins__': None}, None)
-
-
-def normalize_path(path):
-  """ Normalizes the path separator to match the Unix standard. """
-  if sys.platform == 'win32':
-    return path.replace('\\', '/')
-  return path

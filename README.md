@@ -1,87 +1,109 @@
-The Chromium Embedded Framework (CEF) is a simple framework for embedding Chromium-based browsers in other applications.
+The [Chromium Embedded Framework](https://bitbucket.org/chromiumembedded/cef/) (CEF) is a simple framework for embedding Chromium-based browsers in other applications. This repository hosts a sample project called "cef-project" that can be used as the starting point for third-party applications built using CEF.
 
 # Quick Links
 
-* Project Page - https://bitbucket.org/chromiumembedded/cef
+* Project Page - https://bitbucket.org/chromiumembedded/cef-project
 * Tutorial - https://bitbucket.org/chromiumembedded/cef/wiki/Tutorial
-* General Usage - https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage
-* Master Build Quick-Start - https://bitbucket.org/chromiumembedded/cef/wiki/MasterBuildQuickStart
-* Branches and Building - https://bitbucket.org/chromiumembedded/cef/wiki/BranchesAndBuilding
-* Announcements - https://groups.google.com/forum/#!forum/cef-announce
 * Support Forum - http://www.magpcss.org/ceforum/
-* CEF1 C++ API Docs - http://magpcss.org/ceforum/apidocs/
-* CEF3 C++ API Docs - http://magpcss.org/ceforum/apidocs3/
-* Downloads - https://cef-builds.spotifycdn.com/index.html
-* Donations - http://www.magpcss.org/ceforum/donate.php
 
-# Introduction
+# Setup
 
-CEF is a BSD-licensed open source project founded by Marshall Greenblatt in 2008 and based on the [Google Chromium](http://www.chromium.org/Home) project. Unlike the Chromium project itself, which focuses mainly on Google Chrome application development, CEF focuses on facilitating embedded browser use cases in third-party applications. CEF insulates the user from the underlying Chromium and Blink code complexity by offering production-quality stable APIs, release branches tracking specific Chromium releases, and binary distributions. Most features in CEF have default implementations that provide rich functionality while requiring little or no integration work from the user. There are currently over 100 million installed instances of CEF around the world embedded in products from a wide range of companies and industries. A partial list of companies and products using CEF is available on the [CEF Wikipedia page](http://en.wikipedia.org/wiki/Chromium_Embedded_Framework#Applications_using_CEF). Some use cases for CEF include:
+First install some necessary tools and download the cef-project source code.
 
-* Embedding an HTML5-compliant Web browser control in an existing native application.
-* Creating a light-weight native “shell” application that hosts a user interface developed primarily using Web technologies.
-* Rendering Web content “off-screen” in applications that have their own custom drawing frameworks.
-* Acting as a host for automated testing of existing Web properties and applications.
+1\. Install [CMake](https://cmake.org/), a cross-platform open-source build system. Version 2.8.12.1 or newer is required.
 
-CEF supports a wide range of programming languages and operating systems and can be easily integrated into both new and existing applications. It was designed from the ground up with both performance and ease of use in mind. The base framework includes C and C++ programming interfaces exposed via native libraries that insulate the host application from Chromium and Blink implementation details. It provides close integration between the browser and the host application including support for custom plugins, protocols, JavaScript objects and JavaScript extensions. The host application can optionally control resource loading, navigation, context menus, printing and more, while taking advantage of the same performance and HTML5 technologies available in the Google Chrome Web browser.
+2\. Install [Python](https://www.python.org/downloads/). Version 2.7.x is required. If Python is not installed to the default location you can set the `PYTHON_EXECUTABLE` environment variable before running CMake (watch for errors during the CMake generation step below).
 
-Numerous individuals and organizations contribute time and resources to support CEF development, but more involvement from the community is always welcome. This includes support for both the core CEF project and external projects that integrate CEF with additional programming languages and frameworks (see the "External Projects" section below). If you are interested in donating time to help with CEF development please see the "Helping Out" section below. If you are interested in donating money to support general CEF development and infrastructure efforts please visit the [CEF Donations](http://www.magpcss.org/ceforum/donate.php) page.
+3\. Install platform-specific build tools.
 
-# Getting Started
+* Linux: Currently supported distributions include Debian Wheezy, Ubuntu Precise, and related. Ubuntu 18.04 64-bit is recommended. Newer versions will likely also work but may not have been tested. Required packages include: build-essential, libgtk2.0-dev, libgtkglext1-dev.
+* MacOS: Xcode 8 or newer building on MacOS 10.11 (El Capitan) or newer for x86_64. Xcode 12.2 or newer building on MacOS 10.15.4 (Catalina) or newer for ARM64. The Xcode command-line tools must also be installed. Only 64-bit builds are supported on macOS.
+* Windows: Visual Studio 2015 Update 2 or newer building on Windows 7 or newer. Visual Studio 2019 and Windows 10 64-bit are recommended.
 
-Users new to CEF development should start by reading the [Tutorial](https://bitbucket.org/chromiumembedded/cef/wiki/Tutorial) Wiki page for an overview of CEF usage and then proceed to the [GeneralUsage](https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage) Wiki page for a more in-depth discussion or architectural and usage issues. Complete API documentation is available [here](http://magpcss.org/ceforum/apidocs3/). CEF support and related discussion is available on the [CEF Forum](http://www.magpcss.org/ceforum/).
+4\. Download the cef-project source code from the [Downloads page](https://bitbucket.org/chromiumembedded/cef-project/downloads) or by using [Git](https://git-scm.com/) command-line tools:
 
-# Binary Distributions
+```
+git clone https://bitbucket.org/chromiumembedded/cef-project.git
+```
 
-Binary distributions, which include all files necessary to build a CEF-based application, are available on the [Downloads](https://cef-builds.spotifycdn.com/index.html) page. Binary distributions are stand-alone and do not require the download of CEF or Chromium source code. Symbol files for debugging binary distributions of libcef can also be downloaded from the above links.
+# Build
 
-# Source Distributions
+Now run CMake which will download the CEF binary distribution from the [Spotify automated builder](https://cef-builds.spotifycdn.com/index.html) and generate build files for your platform. Then build using platform build tools. For example, using the most recent tool versions on each platform:
 
-The CEF project is an extension of the Chromium project. CEF maintains development and release branches that track Chromium branches. CEF source code can be downloaded, built and packaged manually or with automated tools. Visit the [BranchesAndBuilding](https://bitbucket.org/chromiumembedded/cef/wiki/BranchesAndBuilding) Wiki page for more information.
+```
+cd /path/to/cef-project
 
-# External Projects
+# Create and enter the build directory.
+mkdir build
+cd build
 
-The base CEF framework includes support for the C and C++ programming languages. Thanks to the hard work of external maintainers CEF can integrate with a number of other programming languages and frameworks. These external projects are not maintained by CEF so please contact the respective project maintainer if you have any questions or issues.
+# To perform a Linux build using a 32-bit CEF binary distribution on a 32-bit
+# Linux platform or a 64-bit CEF binary distribution on a 64-bit Linux platform:
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+make -j4
 
-* .Net (CEF3) - https://github.com/cefsharp/CefSharp
-* .Net (CEF1) - https://bitbucket.org/fddima/cefglue
-* .Net/Mono (CEF3) - https://bitbucket.org/xilium/xilium.cefglue
-* .Net (CEF3) - https://bitbucket.org/chromiumfx/chromiumfx
-* Delphi (CEF1) - http://code.google.com/p/delphichromiumembedded/
-* Delphi (CEF3) - https://github.com/hgourvest/dcef3
-* Delphi (CEF3) - https://github.com/salvadordf/CEF4Delphi
-* Go - https://github.com/richardwilkes/cef
-* Go - https://github.com/CzarekTomczak/cef2go
-* Java - https://bitbucket.org/chromiumembedded/java-cef
-* Java - http://code.google.com/p/javacef/
-* Python - http://code.google.com/p/cefpython/
+# To perform a MacOS build using a 64-bit CEF binary distribution:
+cmake -G "Xcode" -DPROJECT_ARCH="x86_64" ..
+# Then, open build\cef.xcodeproj in Xcode and select Product > Build.
 
-If you're the maintainer of a project not listed above and would like your project listed here please either post to the [CEF Forum](http://www.magpcss.org/ceforum/) or contact Marshall directly.
+# To perform a MacOS build using an ARM64 CEF binary distribution:
+cmake -G "Xcode" -DPROJECT_ARCH="arm64" ..
+# Then, open build\cef.xcodeproj in Xcode and select Product > Build.
 
-# Helping Out
+# To perform a Windows build using a 32-bit CEF binary distribution:
+cmake -G "Visual Studio 16" -A Win32 ..
+# Then, open build\cef.sln in Visual Studio 2019 and select Build > Build Solution.
 
-CEF is still very much a work in progress. Some ways that you can help out:
+# To perform a Windows build using a 64-bit CEF binary distribution:
+cmake -G "Visual Studio 16" -A x64 ..
+# Then, open build\cef.sln in Visual Studio 2019 and select Build > Build Solution.
+```
 
-\- Vote for issues in the [CEF issue tracker](https://bitbucket.org/chromiumembedded/cef/issues?status=new&status=open) that are important to you. This helps with development prioritization.
+CMake supports different generators on each platform. Run `cmake --help` to list all supported generators. Generators that have been tested with CEF include:
 
-\- Report any bugs that you find or feature requests that are important to you. Make sure to first search for existing issues before creating new ones. Please use the [CEF Forum](http://magpcss.org/ceforum) and not the issue tracker for usage questions. Each CEF issue should:
+* Linux: Ninja, Unix Makefiles
+* MacOS: Ninja, Xcode 8+ (x86_64) or Xcode 12.2+ (ARM64)
+* Windows: Ninja, Visual Studio 2015+
 
-* Include the CEF revision or binary distribution version.
-* Include information about your OS and compiler version.
-* If the issue is a bug please provide detailed reproduction information.
-* If the issue is a feature please describe why the feature is beneficial.
+Ninja is a cross-platform open-source tool for running fast builds using pre-installed platform toolchains (GNU, clang, Xcode or MSVC). See comments in the "third_party/cef/cef_binary_*/CMakeLists.txt" file for Ninja usage instructions.
 
-\- Write unit tests for new or existing functionality.
+# Examples
 
-\- Pull requests and patches are welcome. View open issues in the [CEF issue tracker](https://bitbucket.org/chromiumembedded/cef/issues?status=new&status=open) or search for TODO(cef) in the source code for ideas.
+CEF provides a number of examples that you can use as a starting point or reference for your own CEF-based development.
 
-If you would like to contribute source code changes to CEF please follow the below guidelines:
+* By default all example targets will be included in the project files generated using CMake.
+* The CEF binary distribution includes cefsimple and cefclient sample applications.
+    * The cefsimple application demonstrates the minimal implementation required for a standalone executable target and is described on the [Tutorial](https://bitbucket.org/chromiumembedded/cef/wiki/Tutorial.md) Wiki page.
+    * The cefclient application demonstrates a wide range of CEF functionality most of which is documented on the [GeneralUsage](https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage.md) Wiki page.
+* The [examples directory](examples) contains example targets that demonstrate specific aspects of CEF functionality.
+    * See the [examples README.md file](examples/README.md) for information about the examples targets.
+    * Add `-DWITH_EXAMPLES=Off` to the cmake command-line if you do not wish to build the examples targets.
 
-\- Create or find an appropriate issue for each distinct bug, feature or change. 
+# Next Steps
 
-\- Submit a [pull request](https://bitbucket.org/chromiumembedded/cef/wiki/ContributingWithGit) or create a patch with your changes and attach it to the CEF issue. Changes should:
+Here are some activities you might want to try next to gain a better understanding of CEF:
 
-* Be submitted against the current [CEF master branch](https://bitbucket.org/chromiumembedded/cef/src/?at=master) unless explicitly fixing a bug in a CEF release branch.
-* Follow the style of existing CEF source files. In general CEF uses the [Chromium coding style](http://www.chromium.org/developers/coding-style).
-* Include new or modified unit tests as appropriate to the functionality.
-* Not include unnecessary or unrelated changes.
+1\. Update the CEF version used to build your local copy of cef-project:
+
+* Visit the [Spotify automated builder](https://cef-builds.spotifycdn.com/index.html) page to see what CEF versions are available.
+* Change the "CEF_VERSION" value near the top of the [top-level CMakeLists.txt file](https://bitbucket.org/chromiumembedded/cef-project/src/master/CMakeLists.txt?fileviewer=file-view-default).
+* Re-run the cmake and build commands. Add `-DWITH_EXAMPLES=Off` to the cmake command-line to disable targets from the [examples directory](examples) because they may not build successfully with the new CEF version.
+
+2\. Add your own project source code:
+
+* Create a new "myproject" directory in the root cef-project directory (e.g. "/path/to/cef-project/myproject").
+* Copy the contents of the "third_party/cef/cef_binary_*/tests/cefsimple" directory to "myproject" as a starting point.
+* Add a new `add_subdirectory(myproject)` command near the end of [top-level CMakeLists.txt file](https://bitbucket.org/chromiumembedded/cef-project/src/master/CMakeLists.txt?fileviewer=file-view-default) after the existing add_subdirectory commands.
+* Change the "CEF_TARGET" and "CEF_HELPER_TARGET" values in "myproject/CMakeLists.txt" from "cefsimple" to "myproject".
+* (Windows only) Rename the "cefclient.exe.manifest" file to "myproject.exe.manifest" in both "myproject/CMakeLists.txt" and the "myproject" directory.
+* Re-run the cmake and build commands.
+
+3\. Gain a better understanding of the cefsimple application by reading the [Tutorial](https://bitbucket.org/chromiumembedded/cef/wiki/Tutorial.md) Wiki page.
+
+4\. Fork the cef-project repository using Bitbucket and Git to store the source code for your own CEF-based project. See the [ContributingWithGit](https://bitbucket.org/chromiumembedded/cef/wiki/ContributingWithGit.md) Wiki page for details (replace all instances of "cef" with "cef-project" in those instructions).
+
+5\. Review the [GeneralUsage](https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage.md) Wiki page for additional details on CEF implementation and usage.
+
+# Support and Contributions
+
+If you have any questions about CEF or cef-project please ask on the [CEF Forum](http://www.magpcss.org/ceforum/). If you would like to make contributions please see the "Helping Out" section of the [CEF Main Page](https://bitbucket.org/chromiumembedded/cef/).

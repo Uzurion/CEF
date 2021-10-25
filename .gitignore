@@ -35,7 +35,6 @@
 .metadata
 .project
 .pydevproject
-.vscode
 # Settings directory for eclipse
 /.settings
 .checkstyle
@@ -43,14 +42,12 @@ cscope.*
 Session.vim
 tags
 Thumbs.db
-# IDE's
-.vs/
-.kdev4/
-*.kdev4
-# CEF generated directories
-/binary_distrib
-/docs
-# CEF generated files
-/include/cef_config.h
-/include/cef_version.h
-.ccls-cache/
+# CEF build directory
+/build
+# CEF download directory
+/third_party/cef/
+# clang-format downloads
+/tools/buildtools/external_bin
+/tools/buildtools/linux64/clang-format
+/tools/buildtools/mac/clang-format
+/tools/buildtools/win/clang-format.exe

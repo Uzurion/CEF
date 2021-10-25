@@ -13,17 +13,21 @@ script_dir = os.path.dirname(__file__)
 root_dir = os.path.join(script_dir, os.pardir)
 
 if sys.platform == 'win32':
-  # Force use of the clang-format version bundled with depot_tools.
-  clang_format_exe = 'clang-format.bat'
+  clang_format_exe = 'buildtools/win/clang-format.exe'
+elif sys.platform == 'darwin':
+  clang_format_exe = 'buildtools/mac/clang-format'
+elif sys.platform.startswith('linux'):
+  clang_format_exe = 'buildtools/linux64/clang-format'
 else:
-  clang_format_exe = 'clang-format'
+  raise Exception("Unsupported platform: %s" % sys.platform)
 
 
 def clang_format(file_name, file_contents):
   # -assume-filename is necessary to find the .clang-format file and determine
   # the language when specifying contents via stdin.
-  result = exec_cmd("%s -assume-filename=%s" % (clang_format_exe, file_name), \
-                    root_dir, file_contents.encode('utf-8'))
+  result = exec_cmd("%s -assume-filename=%s" %
+                    (os.path.join(script_dir, clang_format_exe),
+                     file_name), root_dir, file_contents.encode('utf-8'))
   if result['err'] != '':
     print("clang-format error: %s" % result['err'])
   if result['out'] != '':
